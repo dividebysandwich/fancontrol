@@ -11,14 +11,14 @@ This is a mains project. Make sure you know what you are doing. Proceed at your 
 
 ## Parts list
 
-  1x ESP32 Dev Board (https://www.espressif.com/en/products/hardware/esp32-devkitc/overview - cheap clones can be found on amazon, banggood, etc.)
-  1x SainSmart dual-channel relay board (https://www.sainsmart.com/products/2-channel-5v-relay-module)
-  2x DHT22 sensor (https://www.adafruit.com/product/385) or similar.
-  1x Mini power supply (For example https://www.aliexpress.com/item/Free-Shipping-1pcs-lot-HLK-PM01-AC-DC-220V-to-5V-mini-power-supply-module-intelligent/32408565688.html)
-  1x HD44780 2004 LCD Display Bundle (https://www.amazon.de/AZDelivery-HD44780-Display-Zeichen-Schnittstelle/dp/B07DDGNPX1 - make sure the I2C interface board is included!) 
-  Some case
-  Mains cabling
-  Two mains voltage wall mount / in-line fans of your choice.
+  * 1x ESP32 Dev Board (https://www.espressif.com/en/products/hardware/esp32-devkitc/overview - cheap clones can be found on amazon, banggood, etc.)
+  * 1x SainSmart dual-channel relay board (https://www.sainsmart.com/products/2-channel-5v-relay-module)
+  * 2x DHT22 sensor (https://www.adafruit.com/product/385) or similar.
+  * 1x Mini power supply (For example https://www.aliexpress.com/item/Free-Shipping-1pcs-lot-HLK-PM01-AC-DC-220V-to-5V-mini-power-supply-module-intelligent/32408565688.html)
+  * 1x HD44780 2004 LCD Display Bundle (https://www.amazon.de/AZDelivery-HD44780-Display-Zeichen-Schnittstelle/dp/B07DDGNPX1 - make sure the I2C interface board is included!) 
+  * Some case
+  * Mains cabling
+  * Two mains voltage wall mount / in-line fans of your choice.
 
 ## Wiring
 
