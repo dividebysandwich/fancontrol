@@ -33,7 +33,6 @@ void setup() {
   lcd.print("Fan Control");
   lcd.setCursor(0,1);
   lcd.print("(c) Josef Jahn");
-  delay(1100);
   dht_inside.setup(DHTPIN_1, DHTesp::DHT22);
   delay(1100);
   dht_outside.setup(DHTPIN_2, DHTesp::DHT22);
@@ -92,6 +91,7 @@ void loop() {
     lcd.setCursor(0,1);
     lcd.print("ERROR: SENSOR FAILED");
     delay(3000);
+    ESP.restart();
     return;
   }
 
