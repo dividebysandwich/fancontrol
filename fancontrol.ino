@@ -167,7 +167,7 @@ void loop() {
 
   if (!isnan(t_inside)) {
     // If the inside temperature is higher than the threshold, extract the hot air.
-    if (t_inside > 27.0) {
+    if (t_inside > 26.0) {
       lcd.setCursor(17,1);
       lcd.print("==>");
       fan_in_active = true;
@@ -180,7 +180,7 @@ void loop() {
   
   if (!isnan(t_outside) && !isnan(t_outside) && h_outside != 0.0) {
     // The intake fan only pulls in fresh air if the humidity outside is dry enough, and the temperature differential is not too large.
-    if ((h_outside <= 55.0 || h_outside < h_inside) && t_outside < t_inside + 4.0 && t_outside > 10.0) {
+    if ((h_outside <= 56.0 || h_outside < h_inside) && t_outside < t_inside + 4.0 && t_outside > 5.0) {
       lcd.setCursor(0,1);
       lcd.print("==>");
       fan_out_active = true;
@@ -197,9 +197,14 @@ void loop() {
   if (t < lastSendTime) {
     lastSendTime = t;
   }
+
+  lcd.setCursor(10,0);
+  lcd.print(" ");
   
   if (lastSendTime + 60000 < t || lastSendTime == 0) { 
     lastSendTime = t;
+    lcd.setCursor(10,0);
+    lcd.print("*");
 
     if (fan_in_active) {
       digitalWrite(RELAYPIN_1, LOW);
