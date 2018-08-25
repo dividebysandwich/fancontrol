@@ -13,8 +13,8 @@ const int RESETPIN = 32; // Reset button
 const char* ssid     = ""; //Your wifi access data
 const char* password = "";
 
-const char* host = "";  //Enter the hostname for where the backend data files are accessible, see related GIT repository
-const char* weatherhost = "";  //Enter the hostname for where external weather data can be accessed
+const char* host = "";  //Put the hostname for where the backend data files are accessible here
+const char* weatherhost = "";  //Put the hostname for where external weather data can be accessed
 
 bool fan_in_active;
 bool fan_out_active;
@@ -81,6 +81,9 @@ void setup() {
   pinMode(RELAYPIN_2, OUTPUT);
   digitalWrite(RELAYPIN_2, HIGH);
   pinMode(RESETPIN, INPUT_PULLUP);
+  delay(1000);
+  digitalWrite(RELAYPIN_1, LOW);
+  digitalWrite(RELAYPIN_2, LOW);
   delay(200);
   tcaselect(0);
   delay(200);
@@ -95,7 +98,9 @@ void setup() {
   lcd.print("(c) Josef Jahn");
   tcaselect(1);
   sensor_inside.begin();
-  delay(100);
+  delay(3000);
+  digitalWrite(RELAYPIN_1, HIGH);
+  digitalWrite(RELAYPIN_2, HIGH);
   tcaselect(0);
   lcd.clear();
   lcd.setCursor(0,0);
@@ -174,8 +179,8 @@ void loop() {
   }
   
   if (!isnan(t_outside) && !isnan(t_outside) && h_outside != 0.0) {
-    // The intake fan only pulls in fresh air if the humidity outside is lower, and the temperature differential is not too large.
-    if (h_inside > h_outside && t_outside < t_inside + 8.0 && t_outside > 15.0) {
+    // The intake fan only pulls in fresh air if the humidity outside is dry enough, and the temperature differential is not too large.
+    if ((h_outside <= 55.0 || h_outside < h_inside) && t_outside < t_inside + 4.0 && t_outside > 10.0) {
       lcd.setCursor(0,1);
       lcd.print("==>");
       fan_out_active = true;
