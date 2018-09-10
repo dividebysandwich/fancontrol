@@ -4,6 +4,7 @@
 #include <WiFi.h>
 #include <WiFiClient.h>
 #include "SparkFun_Si7021_Breakout_Library.h"
+#include "esp_system.h"
 
 const int RELAYPIN_1 = 5; // The intake fan relay is on GPIO 5
 const int RELAYPIN_2 = 13; // The extractor fan relay is on GPIO 13
@@ -16,6 +17,7 @@ const char* password = "";
 const char* host = "";  //Put the hostname for where the backend data files are accessible here
 const char* weatherhost = "";  //Put the hostname for where external weather data can be accessed
 
+hw_timer_t *timer = NULL;
 bool fan_in_active;
 bool fan_out_active;
 unsigned long lastSendTime = 0;
@@ -24,6 +26,11 @@ float h_outside = 0.0;
 
 Weather sensor_inside; 
 LiquidCrystal_I2C lcd(0x3F,20,4); // Set the LCD address to 0x3F for a 20 chars and 4 line display (some displays are on address 0x27 instead)
+
+void IRAM_ATTR resetModule(){
+    ets_printf("reboot\n");
+    esp_restart_noos();
+}
 
 void tcaselect(uint8_t i) {
   if (i > 7) return;
@@ -82,9 +89,6 @@ void setup() {
   digitalWrite(RELAYPIN_2, HIGH);
   pinMode(RESETPIN, INPUT_PULLUP);
   delay(1000);
-  digitalWrite(RELAYPIN_1, LOW);
-  digitalWrite(RELAYPIN_2, LOW);
-  delay(200);
   tcaselect(0);
   delay(200);
   lcd.begin(27, 14);// initialize the lcd with SDA and SCL pins 27 and 14 respectively
@@ -105,12 +109,20 @@ void setup() {
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("Outdoor:");
-
   lcd.setCursor(13,0);
   lcd.print("Indoor:");
+  // Watchdog timer
+  timer = timerBegin(0, 80, true); //timer 0, div 80
+  timerAttachInterrupt(timer, &resetModule, true); //reset ESP if timer runs out
+  timerAlarmWrite(timer, 6000000, false); //timeout after 6 seconds
+  timerAlarmEnable(timer); //enable interrupt
+  
 }
 
 void loop() {
+  timerWrite(timer, 0); //reset watchdog timer
+
+  //Reset button
   if (digitalRead(RESETPIN) == LOW)
   { // Check if button has been pressed
     while (digitalRead(RESETPIN) == LOW) {
@@ -118,13 +130,10 @@ void loop() {
     }
     ESP.restart();
   }
+  
   tcaselect(1);
   float h_inside = sensor_inside.getRH(); ;
   float t_inside = sensor_inside.getTemp();
-
-//  tcaselect(2);
-//  float h_outside = sensor_outside.getRH();
-//  float t_outside = sensor_outside.getTemp();
 
   Serial.println("Outdoor temp:");
   Serial.println(t_outside);
@@ -167,7 +176,7 @@ void loop() {
 
   if (!isnan(t_inside)) {
     // If the inside temperature is higher than the threshold, extract the hot air.
-    if (t_inside > 26.0) {
+    if (t_inside > 27.0) {
       lcd.setCursor(17,1);
       lcd.print("==>");
       fan_in_active = true;
